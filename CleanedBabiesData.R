@@ -1,4 +1,4 @@
-BabiesData<- read.table("~/Downloads/babies23.data", header = TRUE)
+BabiesData<- read.table("babies23.data", header = TRUE)
 
 #RemovingColumns
 BabiesData<- BabiesData%>%select(-id,-pluralty,-sex,-outcome)
