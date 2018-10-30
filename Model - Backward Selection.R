@@ -1,4 +1,6 @@
 #Backward Selection 
+library(car)
+
 #FullLinearModel
 BabiesDataNAOM<- na.omit(BabiesData)
 FullModel <- lm(wt ~ ., data = BabiesDataNAOM)
@@ -62,3 +64,4 @@ finalmodel <- model9
 hist(finalmodel$residuals)
 shapiro.test(resid(finalmodel))
 plot(finalmodel)
+
