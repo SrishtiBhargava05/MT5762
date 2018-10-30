@@ -1,0 +1,375 @@
+---
+title: "Assigment 2 MT5762"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cleaning data
+```{r Cleaning Data}
+library(tidyverse)
+babiesRaw <- read.csv("babies23.data", sep="")
+FixNAsBabies <- function(data) {
+  # Remove one level factors
+  data <- data %>% select(-pluralty, -outcome, -sex, -id)
+  # Only male single births
+  
+  # Reformat date
+  data$date <- as.Date(data$date, origin = '1961-01-01')
+
+  # Eliminate NAs from numeric values
+  data$wt[data$wt == 999] <- NA
+  data$gestation[data$gestation == 999] <- NA
+  data$parity[data$parity == 99] <- NA
+  data$age[data$age == 99] <- NA
+  data$ht[data$ht == 99] <- NA
+  data$wt.1[data$wt.1 == 999] <- NA
+  data$dage[data$dage == 99] <- NA
+  data$dht[data$dht == 99] <- NA
+  data$dwt[data$dwt == 999] <- NA
+  data$inc <- as.numeric(data$inc)
+  data$inc[data$inc == 98 | data$inc == 99] <- NA
+  data$inc <- as.numeric(data$inc)
+  
+  # # Recode factors
+  #   data$race[data$race <= 5] <- 1
+  # data$race[data$race == 99 | data$race == 10] <- NA
+  # data$race <- as.factor(data$race)
+  #   data$ed[data$ed == 9] <- NA
+  # data$ed <- as.factor(data$ed)
+  #   data$drace[data$drace <= 5] <- 1
+  # data$drace[data$drace == 99 | data$drace == 10] <- NA
+  # data$drace <- as.factor(data$drace)
+  #   data$ded[data$ded == 9] <- NA
+  # data$ded <- as.factor(data$ded)
+  #   data$marital[data$marital == 0] <- NA
+  # data$marital <- as.factor(data$marital)
+  #   data$time[data$time == 9 | data$time == 98 | data$time == 99] <- NA
+  # data$time <- as.factor(data$time)
+  #   data$smoke[data$smoke == 9] <- NA
+  # data$smoke <- as.factor(data$smoke)
+  # data$number[data$number == 9 | data$number == 98 | data$number == 99] <- NA
+  # data$number <- as.factor(data$number)
+  
+  data$race <- as.factor(recode(data$race, '0' = 'White', '1' = 'White', '2' = 'White', 
+                          '3' = 'White', '4' = 'White', '5' = 'White', '6' = 'Mexican',
+                          '7' = 'Black','8' = 'Asian', '9' = 'Mixed', .default = NA_character_))
+    data$drace <- as.factor(recode(data$drace, '0' = 'White', '1' = 'White', '2' = 'White', 
+                          '3' = 'White', '4' = 'White', '5' = 'White', '6' = 'Mexican',
+                          '7' = 'Black','8' = 'Asian', '9' = 'Mixed', .default = NA_character_))
+  data$ed <- as.factor(recode(data$ed, '0' = 'less than 8th grade', 
+                        '1' = '8th -12th grade - did not graduate', 
+                        '2' = 'HS graduate--no other schooling', '3' = 'HS+trade',
+                        '4' = 'HS+some college', '5' = 'College graduate', '6' = 'Trade school HS unclear',
+                        '7' = 'Trade school HS unclear', .default = NA_character_))
+    data$ded <- as.factor(recode(data$ded, '0' = 'less than 8th grade', 
+                        '1' = '8th -12th grade - did not graduate', 
+                        '2' = 'HS graduate--no other schooling', '3' = 'HS+trade',
+                        '4' = 'HS+some college', '5' = 'College graduate', '6' = 'Trade school HS unclear',
+                        '7' = 'Trade school HS unclear', .default = NA_character_))
+    data$marital <- as.factor(recode(data$marital, '1' = 'Married', '2' = 'Legally Separated', '3' = 'Divorced',
+                             '4' = 'Widowed', '5' = 'Never Married', .default = NA_character_))
+    data$smoke <- as.factor(recode(data$smoke, '0' = 'Never', '1' = 'Smokes Now', 
+                           '2' = 'Until Current Pregnancy', '3' = 'Once Did, not now', .default = NA_character_))
+data$time <- as.factor(recode(data$time, '0' = 'Never smoked', '1' = 'Still Smokes',
+                          '2' = 'During current preg', '3' = 'Within 1 yr', '4' = '1 to 2 years ago',
+                          '5' = '2 to 3 yr ago', '6' = '3 to 4 yrs ago', '7'= '5 to 9yrs ago', 
+                          '8' = '10+yrs ago', '9' = 'quit and dont know', .default = NA_character_))
+data$number <- as.factor(recode(data$number, '0' = 'Never', '1' = '1-4',
+                            '2' = '5-9', '3' = '10-14', '4' = '15-19',
+                            '5' = '20-29', '6' = '30-39', '7'= '40-60', 
+                            '8' = '60 +', '9'= 'smoke but dont know', .default = NA_character_))
+
+  # data$race <- plyr::mapvalues(data$race, c(1,6,7,8,9), c('White', 'Mexican', 'Black', 'Asian', 'Mixed'))
+  # data$ed <- plyr::mapvalues(data$ed, c(0, 1, 2, 3, 4, 5, 6, 7), c("None","SomeHS","HS","HSTr","HSSomeCol","Col","Tr","Tr"))
+  # data$drace <- plyr::mapvalues(data$drace, c(1,6,7,8,9), c('White', 'Mexican', 'Black', 'Asian', 'Mixed'))
+  # data$ded <- plyr::mapvalues(data$ded, c(0, 1, 2, 3, 4, 5, 6, 7), c("None","SomeHS","HS","HSTr","HSSomeCol","Col","Tr","Tr"))
+  # data$marital <- plyr::mapvalues(data$marital, c(1,2,3,4,5), c("Married", "Separated", "Divorced", "Widowed", "Unmarried"))
+  # data$smoke <- plyr::mapvalues(data$smoke, c(0,1,2,3), c("Never", "Now", "Until Pregnancy", "Once did"))
+  # data$time <- plyr::mapvalues(data$time, c(0,1,2,3,4,5,6,7,8,9), c("Never", "Still", "Until Pregnancy", "<1 yr", "1-2 Yrs", "2-3 Yrs", "3-4 Yrs", "5-9 Yrs", "10+ Yrs", "Quit, no time known"))
+  # data$number <- plyr::mapvalues(data$number, c(0, 1, 2, 3, 4, 5, 6, 7, 8), c("Never smoked", "1-4", "5-9", "10-14", "15-19", "20-29", "30-39", "40-60", "60+"))
+  # 
+  # Rename mother's weight
+  data <- rename(data, mwt = wt.1)
+  return(data)
+  
+}
+babiesNAFixed <- FixNAsBabies(babiesRaw)
+babiesNoNA <- na.omit(babiesNAFixed)
+str(babiesNoNA)
+
+# Separating training data and validation dataset
+set.seed(140011358)
+length <- nrow(babiesNoNA)
+validation.vector <- sample(length, length/5)
+babiesNoNAAll <- babiesNoNA
+validation.data.set <- babiesNoNAAll[validation.vector,]
+babiesNoNA <- babiesNoNA[-validation.vector,]
+
+
+attach(babiesNoNA)
+
+```
+
+We see warning messages that some categories are not present.
+We remove pluralty, outcome and sex as they each have only one category present in the dataset, for single births, live births, and male respectively.
+
+We are left with the following variables:
+wt        - Baby's birth weight (Ounces)
+mwt       - Mother's weight (Pounds)
+dwt       - Father's weight (Pounds)
+date      - Baby's birth date (Date)
+gestation - Difference in pregnancy length from average (Days)
+parity    - Number of mother's previous pregnancies (Number of pregnancies)
+race      - Mother's ethnicity (5 Level Factor: White/Mexican/Black/Asian/Mixed)
+drace     - Father's ethnicity (Same as above)
+age       - Mother's age (Age)
+dage      - Father's age (Age)
+ed        - Mother's level of education (7 level Factor: <8th Grade/8-12th Grade/High School Graduate/High School + Trade School/High School + Some College/College/Trade School, coded as None/SomeHS/HS/HSTr/HSSomeCol/Col/Tr)
+ded       - Father's level of education (Same as above)
+ht        - Mother's height, rounded down (Inches)
+dht       - Father's height, rounded down (Inches)
+marital   - Status of parent's relationship (5 level factor: Married/Separated/Divorced/Widowed/Unmarried)
+inc       - Income of family in $2500 increments, (\$2500 dollars)
+smoke     - Whether the mother smokes (4 level Factor: Never/Now/Until Pregnancy/Once did)
+time      - When the mother last smoked (9 level Factor: Never/Still/Until Pregnancy/<1 yr/1-2 Yrs/2-3/3-4 Yrs/5-9 Yrs/10+ Yrs/Quit)
+number    - Number of cigarettes smoked per day by mother while she smoked (9 level Factor: Never smoked/1-4/5-9/10-14/15-19/20-29/30-39/40-60/>60)
+
+## Analysis
+
+Weight is our dependent variable.
+Date may influence a problem with methodology if a correlation is seen, as time scale is too small to expect a change from date.
+
+Various health variables of parents: Height, weight, gestation, parity, age, smoking factors
+Various race and social variables: Race, Education, Marital, Income
+Various smoking variables: Smoke, time, number
+
+Could break these down into several models. Smoking, health, and social
+
+First, smoking:
+
+### Smoking
+
+Does smoking matter:
+
+``` {r Smoking}
+smoking <- aov(wt ~ smoke, babiesNoNA)
+summary(smoking)
+TukeyHSD(smoking)
+```
+No significant difference except between current smokers and other groups. Smoking did not siginificantly affect the baby's weight unless continued during pregnancy.
+
+So, does the the number matter:
+
+``` {r Smoking number}
+babiesSmokers <- filter(babiesNoNA, smoke == 'Smokes Now')
+smokingNumber <- aov(wt ~ number, babiesSmokers)
+summary(smokingNumber)
+TukeyHSD(smokingNumber)
+```
+
+No significant difference found even between the largest group and the smallest group.
+
+So, we've shown that smoking is significant, and that the number of cigarettes smoked is irrelevant, but that if the mother quits before the pregnancy then no significant difference in weight is seen.
+
+Let's make a new category that's relevant:
+
+## ASK IF YOU SHOULD MAKE GESTATION, HEIGHT, AGE, AND WEIGHT A DEVIATION FROM AVERAGE RATHER THAN NUMBERS
+
+``` {r Make a smoking category}
+babiesNoNA$smoker <- ifelse(babiesNoNA$smoke == 'Smokes Now', TRUE, FALSE)
+validation.data.set$smoker <- ifelse(validation.data.set$smoke == 'Smokes Now', TRUE, FALSE)
+detach(babiesNoNA)
+attach(babiesNoNA)
+```
+
+### Health
+``` {r Health variables}
+health <- lm(wt ~ mwt + dwt + ht + dht + gestation + parity + age + dage + smoker, babiesNoNA)
+summary(health)
+health.stepped <- step(health, direction = 'both')
+summary(health.stepped)
+
+health.int <- lm(wt~mwt+dwt+ht+dht+gestation+parity+age+dage+smoker+mwt*ht+dwt*dht)
+summary(health.int)
+health.int.stepped <- step(health.int, direciton = 'both')
+summary(health.int.stepped)
+```
+
+One would expect that height and weight would be strongly correlated, as would age between parents, which may be why at least one of each of these variables were removed. Above, an interaction effect was considered between height and weight, as larger parent weights may have a greater effect for shorter parents, as it is more indicative of obesity than in taller parents. However, no significant interactions were seen.
+
+``` {r Explaining removal of health variables}
+heightWeight <- lm(ht ~ mwt, babiesNoNA)
+dheightWeight <- lm(dht ~ dwt, babiesNoNA)
+ageCor <- lm(age ~ dage, babiesNoNA)
+ages <- lm(wt~age*dage)
+
+summary(heightWeight)
+summary(dheightWeight)
+summary(age)
+summary(ages)
+```
+
+This confirms the above. Both ages were likely removed due to a lack of correlation for either.
+It may be interesting to see how well the model predicts the baby's weight prior to already knowing the duration of gestation. Also including gestation in the model may reduce the apparent effect of other variables, though not suggested by the AIC stepping method, as it may be changed by those same variables in a way equivalent to the change to a baby's weight.
+
+``` {r Health Without Gestation}
+healthNoGes <- lm(wt~mwt+dwt+ht+dht+parity+age+dage+smoker)
+summary(healthNoGes)
+health.no.ges.stepped <- step(healthNoGes, direction = 'both')
+summary(health.no.ges.stepped)
+cor(mwt, gestation)
+cor(gestation, parity)
+```
+(FROM PRE VALIDATION: It is interesting that this gets rid of parity and adds mwt. The effect of mwt could simply be masked by gestation, but they are not particularly strongly correlated. This, as well as parity's inclusion may suggest some interaction between the variables. Will try incorporating this into final model. )
+
+(PRE VALIDATION :
+Model :      wt ~ mwt + dwt + ht + dht + gestation + parity + age + dage + smoker 
+Final model: wt ~ dwt + ht + gestation + parity + smoker
+Non-gestation final model: wt ~ mwt + dwt + ht + smoker
+)
+Final model: wt ~ mwt + dwt + ht + gestation + smoker
+Non-gestation final model: wt ~ mwt + dwt + ht + smoker
+
+Let's examine it statistically:
+``` {r Examine Health}
+hist(resid(health.stepped))
+par(mfrow = c(2,2))
+plot(health.stepped)
+car::residualPlots(health.stepped)
+shapiro.test(resid(health.stepped))
+```
+
+Looks pretty good, very normal residuals. Is a bit of a curve on the fitted vs residuals, resulting from gestation. This is to be expected as extremely long or short gestations would suggest medical complications, which would be correlated with low birth weights.
+
+### Social
+
+Basically all these things are expected to be correlated with each other
+
+``` {r Social}
+social <- lm(wt ~ race + ded + drace + marital + inc + ed, babiesNoNA)
+summary(social)
+social.stepped <- step(social, direction = 'both')
+summary(social.stepped)
+car::vif(social)
+social.aov <- aov(wt~drace+ed+ded+marital)
+car::Anova(social.aov, type = c("III"))
+TukeyHSD(social.aov)
+
+plot(social.stepped)
+shapiro.test(resid(social.stepped))
+```
+
+Using only the father's race to predict the child's weight was found to be the best model using race and social factors. For the subsequent anova, race was removed as it was found to be extremely colinear with drace. Father's education was also found to be related, but no individual pairwise effects were shown to be significant. Despite Shapiro-Wilk's normality test suggesting non-normal residuals, the qqplots look good, and it's a relatively high sample size.
+
+## Overall model
+``` {R Overall model}
+summary <- lm( wt ~ dwt + ht + gestation + parity + smoker + 
+    drace, babiesNoNA)
+summary(summary)
+summary.stepped <- step(summary, direction = "both") # This shouldn't do anything more
+summary(summary.stepped)
+summary.aov <- aov(summary.stepped)
+TukeyHSD(summary.aov,which = 'drace')
+
+summary.int <- lm( wt ~ dwt + ht + gestation + parity + smoker + 
+    drace + gestation*parity + gestation*mwt, babiesNoNA)
+summary(summary.int)
+summary.int.stepped <- step(summary.int, direction = "both") # This shouldn't do anything more
+summary(summary.int.stepped)
+
+summary.no.ges <- lm(wt ~ mwt + dwt + ht + smoker + drace)
+summary(summary.no.ges)
+summary.no.ges.stepped <- step(summary.no.ges, direction = 'both') # This shouldn't do anything more
+summary(summary.no.ges.stepped)
+
+
+summary.all.int <- lm(wt~(dwt+ht+gestation+parity+smoker+drace)^2)
+summary(summary.all.int)
+summary.all.int.stepped <- step(summary.all.int, direction = "both")
+summary(summary.all.int.stepped)
+  # No other significant first-order interactions found
+
+# AOV RACES WORK OUT BEST BASELINE INTERCEPT
+# MAYBE JUST INCLUDE TUKEY'S
+# MAYBE NOT EVEN NECESSARY
+
+## Checking models
+hist(resid(summary.stepped))
+plot(summary.stepped)
+car::residualPlots(summary.stepped)
+shapiro.test(resid(summary.stepped))
+hist(resid(summary.int.stepped))
+plot(summary.int.stepped)
+car::residualPlots(summary.int.stepped)
+shapiro.test(resid(summary.int.stepped))
+hist(resid(summary.no.ges.stepped))
+plot(summary.no.ges.stepped)
+car::residualPlots(summary.no.ges.stepped)
+shapiro.test(resid(summary.no.ges.stepped))
+
+# Comparing mean squared errors on training data
+GetMeanSquaredError <- function(model, validation.data) {
+  predicted <- predict(model,validation.data)
+  ind.var <- colnames(model$model[1])
+  actual <- validation.data[ind.var]
+  residuals <- actual - predicted
+  squared.resid <- residuals**2
+  return(mean((residuals[,ind.var])**2))
+}
+
+validation.data.set.smoke.factor <- validation.data.set
+validation.data.set.smoke.factor$smoker <- as.factor(validation.data.set$smoker)
+
+GetMeanSquaredError(summary.stepped, validation.data.set.smoke.factor)
+GetMeanSquaredError(summary.int.stepped, validation.data.set.smoke.factor)
+GetMeanSquaredError(summary.no.ges.stepped, validation.data.set)
+GetMeanSquaredError(summary.all.int.stepped, validation.data.set)
+
+```
+With a look at the Residuals vs Leverage plot in particular, for the summary model including interactions, it appears that the significance of these interactions may be almost entirely due to a single example with extremely high parity but extremely low birth weight and gestation.
+
+
+
+``` {r Bootstrapping}
+BootstrapCoefNoCorr <- function(data, model, b = 999, alpha = 0.05) {
+  n <- nrow(data)
+  vars <- colnames(model$model)
+  coefs <- names(coef(model))
+  coefs[1] <- vars[1]
+  num.vars <- length(vars)
+  num.coefs <- length(coefs)
+  matr <- matrix(nrow = b+1, ncol = num.coefs)
+  matr[1,] <- coef(model)
+  colnames(matr) <- names(coef(model))
+  dependent.var <- vars[1]
+  independent.vars <- vars[2:num.vars]
+  
+  pred <- predict(model)
+  resid <- resid(model)
+  
+  for (i in 2:(b+1)) {
+    resample.index <- sample(1:n, n, replace = TRUE)
+    resample.dep.var <- pred + resid[resample.index]
+    dataframe <- data[,independent.vars]
+    dataframe$dep <- resample.dep.var
+    matr[i,] <- coef(lm(dep ~ dwt + ht + gestation + parity + smoker + drace, dataframe))
+  }
+  
+  coefs <- ncol(matr)
+  quantiles <- matrix(nrow = 2, ncol = coefs)
+  colnames(quantiles) <- colnames(matr)
+  rownames(quantiles) <- c('lower.ci', 'upper.ci')
+  for (i in 1:coefs) {
+    quantiles[,i] <- quantile(matr[,i], probs = c(alpha/2,(1-alpha/2)))
+  }
+  return(quantiles)
+}
+
+BootstrapCoefNoCorr(babiesNoNA, summary.stepped)
+```
+
+
+
