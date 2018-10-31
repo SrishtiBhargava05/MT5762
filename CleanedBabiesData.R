@@ -66,14 +66,15 @@ ggplot(data=BabiesData, aes(wt)) +
                  fill="green",
                  alpha = .2) +
   geom_density(col=2) +
-  labs(x="weight", y="Frequency")
+  labs(x="weight", y="Density") +
+  ggtitle("Histogram of Infants weight")
 
-#Histogram for birth weight by Ethnic
+#Histogram for birth weight by Ethnicity
 ggplot(BabiesData,aes(x=wt,y=..density..))+
   geom_histogram(binwidth=.2,fill="blue",colour="blue")+geom_density()+
   labs(x="Birth Weights",y="Density")+
   facet_grid(. ~ mrace)+theme_economist(base_size = 6)+scale_colour_economist()+
-  ggtitle("Histogram of Birth Weights by Ethnic")
+  ggtitle("Histogram of Birth Weights by Ethnicity")
 
 
 #Histogram for birth weight smoking view
@@ -84,9 +85,31 @@ ggplot(BabiesData,aes(x=wt,y=..density..))+
 ggtitle("Histogram of Birth Weights")
 
 #scatterplot of mothers' and babies' weight--Total
-ggplot(BabiesData,aes(x=mwt,y=wt))  +geom_point(size=2.5,colour="",shape=20)+
+ggplot(BabiesData,aes(x=mwt,y=wt))  +geom_point(size=2.5,colour="orange2",shape=20)+
   labs(x="Weights of Mothers",y="Birth Weights of Babies")+
   theme_economist(base_size=16)+scale_colour_economist()+
-  ggtitle("Weights of Mothers and Babies")+
+  ggtitle("Scatter plot: Weights of Mothers and Newborns in KG")+
   theme(plot.title=element_text(size = 25))+
   geom_smooth(method='lm',formula=y~x)
+
+
+# Plotting according to mom weight and weight
+qplot(BabiesData[,"mwt"],BabiesData[,"wt"], xlab = "Mother Weight", ylab = "Babies Weight",
+      shape = BabiesData$mrace, col = BabiesData$mrace) +
+  scale_shape_manual(values = 15) +
+  scale_shape(solid = TRUE) +
+  labs(shape = "Smoking Status", col = "Colour")
+
+
+
+babies.level <- c("less than 8th grade", "8th -12th grade - did not graduate", "HS graduate--no other schooling", "HS+some college",  "Trade school HS unclear", "HS+trade", "College graduate")
+fct.momed <- factor(BabiesData$med, levels = babies.level, ordered = TRUE)
+
+# Plotting according to mom education and weight
+qplot(fct.momed,BabiesData[,"wt"], xlab = "Mother Education", ylab = "Babies Weight", col = fct.momed) +
+  scale_shape_manual(values = 15) +
+  scale_shape(solid = TRUE) +
+  labs(shape = "Smoking Status", col = "Colour") +
+  ggtitle("Scatter Plot of Mothers Education and Infants Weight") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  
