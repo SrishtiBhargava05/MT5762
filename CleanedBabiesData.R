@@ -53,3 +53,18 @@ BabiesData$number <- recode(BabiesData$number, '0' = 'Never', '1' = '1-4',
                             '8' = '60 +', '9'= 'smoke but dont know')
 BabiesData$number <- as.factor(BabiesData$number)
 BabiesData <- BabiesData %>% rename('mwt' = 'wt.1', 'mht' = 'ht', 'mrace' = 'race', 'mage' = 'age', 'med' = 'ed')
+
+
+# Babies mean and SD/mrace
+mean.sd.babies <- BabiesData %>% select("wt","mrace") %>%
+  group_by(mrace) %>% summarise(mean(wt, na.rm = TRUE), sd(wt, na.rm = TRUE))
+
+# Frequency of weight
+ggplot(data=BabiesData, aes(wt)) +
+  geom_histogram(aes(y =..density..),
+                 col="red",
+                 fill="green",
+                 alpha = .2) +
+  geom_density(col=2) +
+  # labs(title="Frequency of Element Al") +
+  labs(x="weight", y="Frequency")
