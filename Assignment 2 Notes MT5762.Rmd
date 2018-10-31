@@ -275,7 +275,7 @@ summary.aov <- aov(summary.stepped)
 TukeyHSD(summary.aov,which = 'drace')
 
 summary.int <- lm( wt ~ dwt + ht + gestation + parity + smoker + 
-    drace + gestation*parity + gestation*mwt, babiesNoNA)
+    drace + gestation:parity + gestation*mwt, babiesNoNA)
 summary(summary.int)
 summary.int.stepped <- step(summary.int, direction = "both") # This shouldn't do anything more
 summary(summary.int.stepped)

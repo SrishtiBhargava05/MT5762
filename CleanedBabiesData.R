@@ -84,7 +84,7 @@ ggplot(BabiesData,aes(x=wt,y=..density..))+
 ggtitle("Histogram of Birth Weights")
 
 #scatterplot of mothers' and babies' weight--Total
-ggplot(BabiesData,aes(x=mwt,y=wt))  +geom_point(size=2.5,colour="orange2",shape=20)+
+ggplot(BabiesData,aes(x=mwt,y=wt))  +geom_point(size=2.5,colour="",shape=20)+
   labs(x="Weights of Mothers",y="Birth Weights of Babies")+
   theme_economist(base_size=16)+scale_colour_economist()+
   ggtitle("Weights of Mothers and Babies")+
