@@ -66,5 +66,27 @@ ggplot(data=BabiesData, aes(wt)) +
                  fill="green",
                  alpha = .2) +
   geom_density(col=2) +
-  # labs(title="Frequency of Element Al") +
   labs(x="weight", y="Frequency")
+
+#Histogram for birth weight by Ethnic
+ggplot(BabiesData,aes(x=wt,y=..density..))+
+  geom_histogram(binwidth=.2,fill="blue",colour="blue")+geom_density()+
+  labs(x="Birth Weights",y="Density")+
+  facet_grid(. ~ mrace)+theme_economist(base_size = 6)+scale_colour_economist()+
+  ggtitle("Histogram of Birth Weights by Ethnic")
+
+
+#Histogram for birth weight smoking view
+ggplot(BabiesData,aes(x=wt,y=..density..))+
+  geom_histogram(binwidth=.15,fill="cyan3",colour="black")+geom_density()+
+  labs(x="Birth Weights",y="Density")+
+  facet_grid(.~smoke)+theme_economist(base_size = 5)+scale_colour_economist()
+ggtitle("Histogram of Birth Weights")
+
+#scatterplot of mothers' and babies' weight--Total
+ggplot(BabiesData,aes(x=mwt,y=wt))  +geom_point(size=2.5,colour="orange2",shape=20)+
+  labs(x="Weights of Mothers",y="Birth Weights of Babies")+
+  theme_economist(base_size=16)+scale_colour_economist()+
+  ggtitle("Weights of Mothers and Babies")+
+  theme(plot.title=element_text(size = 25))+
+  geom_smooth(method='lm',formula=y~x)
