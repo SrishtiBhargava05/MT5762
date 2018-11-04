@@ -1,6 +1,6 @@
 #LinearModel
-BabiesDataNAOM<- na.omit(BabiesData)
-FullModel <- lm(wt ~ ., data = BabiesDataNAOM)
+
+FullModel <- lm(wt ~ ., data = babiesNoNA)
 summary(FullModel)
 SteppedModel <- step(FullModel)
 

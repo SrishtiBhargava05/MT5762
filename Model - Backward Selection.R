@@ -2,14 +2,24 @@
 library(car)
 
 #FullLinearModel
+<<<<<<< HEAD
+=======
+
+FullModel <- lm(wt ~ ., data = babiesNoNA)
+summary(FullModel)
+>>>>>>> 8c8695c15e21b1617e7ef326cfb9598576d92243
 
 FullModel <- lm(wt ~ ., data = babiesNoNA)
 summary(FullModel)
 Anova(FullModel)
 
+<<<<<<< HEAD
 #Using the Adjusted R squared and p values to determine the covariates by backward selection. 
 #Removing variables with that have high p-values, i.e the ones that show no statistical signifcance
 
+=======
+#Removing Variable with highest p value 
+>>>>>>> 8c8695c15e21b1617e7ef326cfb9598576d92243
 Model<- update(FullModel, .~ . - age)
 summary(Model)
 Anova(Model)
@@ -72,5 +82,8 @@ shapiro.test(resid(finalmodel))
 plot(finalmodel)
 
 
+<<<<<<< HEAD
 ###Validation 
 GetMeanSquaredError(finalmodel,validation.data.set)
+=======
+>>>>>>> 8c8695c15e21b1617e7ef326cfb9598576d92243
