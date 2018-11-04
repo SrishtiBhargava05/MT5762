@@ -122,10 +122,10 @@ qplot(fct.momed,BabiesData[,"wt"], xlab = "Mother Education", ylab = "Babies Wei
 ggplot(BabiesData, aes(x=fct.momed, y=BabiesData[,"wt"], fill = fct.momed)) +
   geom_boxplot(alpha = 0.7) +
   stat_summary(fun.y=mean, colour="darkred", geom="point", 
-               shape=18, size=3,show_guide = FALSE) +
-  scale_y_continuous(name = "Length") + 
-  scale_x_discrete(name = "Age") + 
-  ggtitle(" Box plot of Age Vs Length") +
+               shape=18, size=4,show_guide = FALSE) +
+  scale_y_continuous(name = "Infant Weight /oz") + 
+  scale_x_discrete(name = "Education") + 
+  ggtitle("Mothers Education and Infants Weight") +
   theme_bw() +
   theme(plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
         text = element_text(size = 12, family = "Tahoma"),
@@ -133,6 +133,6 @@ ggplot(BabiesData, aes(x=fct.momed, y=BabiesData[,"wt"], fill = fct.momed)) +
         axis.text.x=element_text(size = 7, angle = 45, hjust = 1),
         legend.position = "bottom") +
   scale_fill_brewer(palette = "Accent") +
-  labs(fill = "Fish Age") +
+  labs(fill = "") +
   geom_jitter()
   
